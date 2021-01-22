@@ -16,9 +16,9 @@ top = $(shell echo %cd%)
 endif
 
 ifeq ($(HOST),Linux)
-lib_path= ./STM32F10x_StdPeriph_Lib_V3.5.0
+lib_path= ./STM32F0xx_StdPeriph_Lib_V1.5.0
 else ifeq ($(HOST),Windows)
-lib_path= $(top)\STM32F10x_StdPeriph_Lib_V3.5.0
+lib_path= $(top)\STM32F0xx_StdPeriph_Lib_V1.5.0
 endif
 
 inc = -I $(top)/cmsis/inc \
@@ -54,36 +54,39 @@ $(obj):%.o:%.c
 project:
 ifeq ($(HOST),Linux)
 	mkdir cmsis cmsis/inc cmsis/src driver driver/inc driver/src project project/output user user/inc user/src doc startup
-	cp $(lib_path)/stm32f10x_stdperiph_lib_um.chm ./doc
-	cp -r $(lib_path)/Libraries/STM32F10x_StdPeriph_Driver ./
-	mv STM32F10x_StdPeriph_Driver libraries
-	cp $(lib_path)/Libraries/CMSIS/CM3/CoreSupport/core_cm3.h ./cmsis/inc
-	cp $(lib_path)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/stm32f10x.h ./cmsis/inc
-	cp $(lib_path)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.h ./cmsis/inc
-	cp $(lib_path)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/system_stm32f10x.c ./cmsis/src 
-	cp $(lib_path)/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/TrueSTUDIO/startup_stm32f10x_hd.s ./startup
-	cp $(lib_path)/Project/STM32F10x_StdPeriph_Template/stm32f10x_it.c ./user/src 
-	cp $(lib_path)/Project/STM32F10x_StdPeriph_Template/stm32f10x_it.h ./user/inc
-	cp $(lib_path)/Project/STM32F10x_StdPeriph_Template/stm32f10x_conf.h ./user/inc
-	cp $(lib_path)/Project/STM32F10x_StdPeriph_Template/TrueSTUDIO/STM3210E-EVAL/stm32_flash.ld ./project 
+	cp $(lib_path)/stm32f0xx_stdperiph_lib_um.chm ./doc
+	cp -r $(lib_path)/Libraries/STM32F0xx_StdPeriph_Driver ./
+	mv STM32F0xx_StdPeriph_Driver libraries
+	cp $(lib_path)/Libraries/CMSIS/Include/* ./cmsis/inc
+	cp $(lib_path)/Libraries/CMSIS/Device/ST/STM32F0xx/Include/* ./cmsis/inc
+	cp $(lib_path)/Libraries/CMSIS/Device/ST/STM32F0xx/Source/Templates/TrueSTUDIO/startup_stm32f030.s ./startup
+	cp $(lib_path)/Libraries/CMSIS/Device/ST/STM32F0xx/Source/Templates/system_stm32f0xx.c ./cmsis/src 
+	cp $(lib_path)/Projects/STM32F0xx_StdPeriph_Templates/main.h ./user/inc
+	cp $(lib_path)/Projects/STM32F0xx_StdPeriph_Templates/stm32f0xx_it.c ./user/src 
+	cp $(lib_path)/Projects/STM32F0xx_StdPeriph_Templates/stm32f0xx_it.h ./user/inc
+	cp $(lib_path)/Projects/STM32F0xx_StdPeriph_Templates/stm32f0xx_conf.h ./user/inc
+	cp $(lib_path)/Projects/STM32F0xx_StdPeriph_Templates/TrueSTUDIO/STM32F030/STM32F030R8_FLASH.ld ./project/stm32_flash.ld
 	touch ./user/src/main.c
-	rm -rf STM32F10x_StdPeriph_Lib_V3.5.0
+	rm -rf $(lib_path)
 
 else ifeq ($(HOST),Windows)
 	md cmsis cmsis\inc cmsis\src driver driver\inc driver\src project project\output user user\inc user\src doc startup libraries
-	copy $(lib_path)\stm32f10x_stdperiph_lib_um.chm $(top)\doc
-	xcopy /e  $(lib_path)\Libraries\STM32F10x_StdPeriph_Driver $(top)\libraries
-	xcopy $(lib_path)\Libraries\CMSIS\CM3\CoreSupport\core_cm3.h $(top)\cmsis\inc
-	xcopy $(lib_path)\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\stm32f10x.h $(top)\cmsis\inc
-	xcopy $(lib_path)\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.h $(top)\cmsis\inc
-	xcopy $(lib_path)\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c $(top)\cmsis\src
-	xcopy $(lib_path)\Libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\TrueSTUDIO\startup_stm32f10x_hd.s $(top)\startup
-	xcopy $(lib_path)\Project\STM32F10x_StdPeriph_Template\stm32f10x_it.c $(top)\user\src
-	xcopy $(lib_path)\Project\STM32F10x_StdPeriph_Template\stm32f10x_it.h $(top)\user\inc
-	xcopy $(lib_path)\Project\STM32F10x_StdPeriph_Template\stm32f10x_conf.h $(top)\user\inc
-	xcopy $(lib_path)\Project\STM32F10x_StdPeriph_Template\TrueSTUDIO\STM3210E-EVAL\stm32_flash.ld $(top)\project
-	echo #include "stm32f10x.h" int main() {}> $(top)\user\src\main.c
-	rd /s /q STM32F10x_StdPeriph_Lib_V3.5.0
+	copy $(lib_path)\stm32f0xx_stdperiph_lib_um.chm $(top)\doc
+	xcopy /e $(lib_path)\Libraries\STM32F0xx_StdPeriph_Driver $(top)\libraries
+	xcopy $(lib_path)\Libraries\CMSIS\Include\core*.h $(top)\cmsis\inc
+	xcopy $(lib_path)\Libraries\CMSIS\Include\arm*.h $(top)\cmsis\inc
+	xcopy $(lib_path)\Libraries\CMSIS\Device\ST\STM32F0xx\Include\stm32f0xx.h $(top)\cmsis\inc
+	xcopy $(lib_path)\Libraries\CMSIS\Device\ST\STM32F0xx\Include\system_stm32f0xx.h $(top)\cmsis\inc
+	xcopy $(lib_path)\Libraries\CMSIS\Device\ST\STM32F0xx\Source\Templates\TrueSTUDIO\startup_stm32f030.s $(top)\startup
+	xcopy $(lib_path)\Libraries\CMSIS\Device\ST\STM32F0xx\Source\Templates\system_stm32f0xx.c $(top)\cmsis\src 
+	xcopy $(lib_path)\Projects\STM32F0xx_StdPeriph_Templates\main.h $(top)\user\inc
+	xcopy $(lib_path)\Projects\STM32F0xx_StdPeriph_Templates\stm32f0xx_it.c $(top)\user\src 
+	xcopy $(lib_path)\Projects\STM32F0xx_StdPeriph_Templates\stm32f0xx_it.h $(top)\user\inc
+	xcopy $(lib_path)\Projects\STM32F0xx_StdPeriph_Templates\stm32f0xx_conf.h $(top)\user\inc
+	xcopy $(lib_path)\Projects\STM32F0xx_StdPeriph_Templates\TrueSTUDIO\STM32F030\STM32F030R8_FLASH.ld $(top)\project
+	rename $(top)\project\STM32F030R8_FLASH.ld stm32_flash.ld
+	echo #include "stm32f0xx.h" int main() {}> $(top)\user\src\main.c
+	rd /s /q $(lib_path)
 endif
 
 update:
